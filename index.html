@@ -4,49 +4,187 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>نامه‌ای برای تو</title>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Vazirmatn',sans-serif;background:linear-gradient(135deg,#fce3ec,#ffe8d6);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-    .card{background:#fff;border-radius:16px;box-shadow:0 8px 20px rgba(0,0,0,.18);width:90%;max-width:640px;padding:28px;text-align:center;position:relative}
-    .show-btn{position:absolute;left:16px;top:12px;padding:.45rem .7rem;border-radius:8px;background:#444;color:#fff;border:none;cursor:pointer;font-size:.85rem;display:none}
-    h2{margin-bottom:.4rem}
-    p{color:#333;margin-bottom:1rem}
-    input[type="password"]{width:80%;max-width:420px;padding:.75rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;margin-bottom:1rem}
-    .actions{margin-top:.6rem}
-    button{padding:.7rem 1.2rem;border-radius:8px;border:none;background:#d6336c;color:#fff;cursor:pointer;margin:.2rem;transition:transform .18s}
-    button:hover{transform:scale(1.04)}
-    .back-btn{background:#555;margin-top:1rem}
-    .hidden{display:none}
-    .message{text-align:right;font-size:1.05rem;line-height:1.9;white-space:pre-wrap;margin-top:1rem;max-height:60vh;overflow:auto;padding:14px;background:#fdfcf9;border-radius:12px;box-shadow:inset 0 0 10px rgba(0,0,0,.04)}
-    .audio-controls{margin-top:10px}
-    .audio-controls button{background:#0a84ff}
-    @media (max-width:600px){input[type="password"]{width:100%}.show-btn{left:12px;top:10px;padding:.35rem .5rem}}
+    :root{
+      --bg-light:#f6f8fb;
+      --card-light:#ffffff;
+      --text-light:#0b1220;
+      --muted-light:#5b6b80;
+      --accent-from:#ff6b8a;
+      --accent-to:#ff9fb0;
+      --glass-light:rgba(11,18,32,0.04);
+
+      --bg-dark:#071426;
+      --card-dark:rgba(255,255,255,0.02);
+      --text-dark:#e6eef8;
+      --muted-dark:#9fb0c8;
+      --accent2-from:#7be0c7;
+      --accent2-to:#6bd4ff;
+      --glass-dark:rgba(255,255,255,0.03);
+    }
+
+    /* تم پیش‌فرض: روشن */
+    :root{
+      --bg: var(--bg-light);
+      --card: var(--card-light);
+      --text: var(--text-light);
+      --muted: var(--muted-light);
+      --accent-grad: linear-gradient(90deg,var(--accent-from),var(--accent-to));
+      --glass: var(--glass-light);
+      --shadow: 0 10px 32px rgba(2,6,23,0.06);
+    }
+
+    body.dark{
+      --bg: linear-gradient(180deg,var(--bg-dark),#052233);
+      --card: linear-gradient(180deg,var(--card-dark), rgba(255,255,255,0.01));
+      --text: var(--text-dark);
+      --muted: var(--muted-dark);
+      --accent-grad: linear-gradient(90deg,var(--accent2-from),var(--accent2-to));
+      --glass: var(--glass-dark);
+      --shadow: 0 12px 40px rgba(2,6,23,0.6);
+    }
+
+    /* پایه */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:'Vazirmatn',system-ui,Roboto,Arial;
+      background:var(--bg);color:var(--text);
+      display:flex;align-items:center;justify-content:center;padding:20px;
+      -webkit-font-smoothing:antialiased;transition:background .45s ease,color .35s ease;
+    }
+
+    /* کارت */
+    .card{
+      width:100%;max-width:760px;border-radius:14px;padding:18px;background:var(--card);
+      box-shadow:var(--shadow);position:relative;display:flex;flex-direction:column;gap:12px;
+      transition:transform .45s cubic-bezier(.2,.9,.2,1),box-shadow .35s;
+      will-change:transform;
+      overflow:hidden;
+    }
+    /* شناور آهسته برای جلوه */
+    .card:hover{transform:translateY(-6px) scale(1.01)}
+    .card::before{
+      content:"";position:absolute;inset:0;background:linear-gradient(120deg, rgba(255,255,255,0.02), transparent 30%);pointer-events:none;
+    }
+
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .title-group{display:flex;flex-direction:column;align-items:flex-end}
+    h1{font-size:1.05rem;margin:0}
+    p.lead{margin:0;color:var(--muted);font-size:.95rem;transition:color .25s}
+
+    /* هدر اکشن‌ها */
+    .header-actions{display:flex;align-items:center;gap:10px}
+
+    /* دکمهٔ تم روی بلوک */
+    .theme-toggle{
+      display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;
+      padding:.45rem;border-radius:10px;cursor:pointer;color:var(--text);
+      width:48px;height:48px;flex:0 0 48px;
+      transition:background .25s ease, transform .12s ease, box-shadow .25s;
+      box-shadow:0 6px 18px rgba(0,0,0,0.04);
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    }
+    .theme-toggle:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,0.06)}
+    .theme-toggle svg{width:22px;height:22px;display:block;transition:transform .28s cubic-bezier(.2,.9,.2,1),opacity .2s;fill:currentColor}
+
+    /* دکمه نمایش کامل */
+    #showAllBtn{
+      padding:.45rem .75rem;border-radius:10px;font-weight:700;background:var(--accent-grad);border:0;color:#051223;cursor:pointer;
+      transition:filter .18s ease, transform .12s;
+    }
+    #showAllBtn:hover{filter:brightness(.98);transform:translateY(-2px)}
+
+    /* فرم و کنترل‌ها */
+    .controls{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}
+    input[type="password"]{
+      background:transparent;border:1px solid rgba(0,0,0,0.06);padding:.7rem .9rem;border-radius:10px;color:var(--text);
+      min-width:200px;outline:none;font-size:1rem;transition:box-shadow .18s, border-color .18s, background .18s;
+    }
+    input[type="password"]:focus{
+      box-shadow:0 6px 20px rgba(0,0,0,0.06);border-color:rgba(0,0,0,0.12);
+    }
+    body.dark input[type="password"]{border-color:rgba(255,255,255,0.06)}
+
+    /* پیام */
+    .message{
+      margin-top:8px;padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      color:var(--text);line-height:1.85;white-space:pre-wrap;max-height:58vh;overflow:auto;border:1px solid rgba(0,0,0,0.03);
+      transition:background .35s,color .25s;
+    }
+    /* وقتی متن کامل نمایش داده شد، اندکی glow */
+    .message.full{box-shadow:0 10px 30px rgba(0,0,0,0.06);border-color:rgba(255,255,255,0.02)}
+
+    /* کنترل صوت و بازگشت */
+    .audio-controls{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+    .audio-controls button, .back{
+      padding:.45rem .6rem;border-radius:8px;border:0;background:transparent;color:var(--text);cursor:pointer;transition:color .18s;
+    }
+    .back{margin-left:auto;margin-top:12px;padding:.55rem .8rem;border-radius:8px;border:1px solid rgba(0,0,0,0.04);background:transparent;color:var(--muted);cursor:pointer}
+
+    /* هاور کوچک روی لینک/دکمه‌های غیر اصلی */
+    .audio-controls button:hover, .back:hover{color:var(--muted);transform:translateY(-2px)}
+
+    @media (max-width:520px){
+      .card{padding:14px}
+      input[type="password"]{min-width:140px;width:100%}
+      .controls{flex-direction:column;align-items:stretch}
+      .audio-controls{justify-content:flex-start}
+      .theme-toggle{width:42px;height:42px}
+    }
   </style>
 </head>
 <body>
-  <div class="card" id="authCard">
-    <h2>نامه‌ای برای تو</h2>
-    <p>برای دیدن نامه، رمز را وارد کن:</p>
-    <input type="password" id="passwordInput" placeholder="رمز را وارد کنید..." />
-    <div class="actions">
-      <button id="openBtn">باز کردن نامه</button>
+  <main class="card" role="main" aria-labelledby="mainTitle">
+    <header>
+      <div class="title-group">
+        <h1 id="mainTitle">نامه‌ای برای تو</h1>
+        <p id="leadText" class="lead">برای دیدن نامه، رمز را وارد کن</p>
+      </div>
+
+      <div class="header-actions">
+        <button id="showAllBtn" title="نمایش کامل" style="display:none">نمایش کامل</button>
+
+        <button id="themeToggle" class="theme-toggle" aria-label="تغییر تم" title="تغییر تم">
+          <svg id="iconMoon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21.64 13.14a9 9 0 11-10.78-10.78 7 7 0 1010.78 10.78z"></path>
+          </svg>
+          <svg id="iconSun" viewBox="0 0 24 24" aria-hidden="true" style="opacity:0;transform:scale(.8)">
+            <g>
+              <circle cx="12" cy="12" r="4"></circle>
+              <g stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+                <line x1="12" y1="2" x2="12" y2="4"></line>
+                <line x1="12" y1="20" x2="12" y2="22"></line>
+                <line x1="2" y1="12" x2="4" y2="12"></line>
+                <line x1="20" y1="12" x2="22" y2="12"></line>
+                <line x1="4.5" y1="4.5" x2="6" y2="6"></line>
+                <line x1="18" y1="18" x2="19.5" y2="19.5"></line>
+                <line x1="4.5" y1="19.5" x2="6" y2="18"></line>
+                <line x1="18" y1="6" x2="19.5" y2="4.5"></line>
+              </g>
+            </g>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="controls" class="controls" role="form" aria-label="کنترل ورود">
+      <input id="passwordInput" type="password" placeholder="رمز را وارد کنید…" aria-label="رمز" />
+      <button id="openBtn" class="btn" style="background:var(--accent-grad);color:#051223;border-radius:10px;padding:.6rem .9rem;border:0;cursor:pointer">باز کردن نامه</button>
     </div>
-  </div>
 
-  <div class="card hidden" id="letterCard">
-    <button class="show-btn" id="showAllBtn" title="نمایش کامل متن">نمایش</button>
-    <div class="message" id="typedText"></div>
+    <div id="typedText" class="message" aria-live="polite"></div>
 
-    <div class="audio-controls hidden" id="audioControls">
+    <div id="audioControls" class="audio-controls" hidden>
       <audio id="loveAudio" src="rafti.mp3"></audio>
-      <button id="playAudio">پخش آهنگ</button>
-      <button id="pauseAudio">توقف آهنگ</button>
-      <button id="restartAudio">پخش مجدد</button>
+      <button id="playAudio" type="button">پخش</button>
+      <button id="pauseAudio" type="button">توقف</button>
+      <button id="restartAudio" type="button">پخش مجدد</button>
     </div>
 
-    <button class="back-btn" id="backBtn">بازگشت</button>
-  </div>
+    <button id="backBtn" class="back">بازگشت</button>
+  </main>
 
   <script>
     const CORRECT_PASSWORD = "sara";
@@ -93,84 +231,112 @@
 با عشق،
 رضا`;
 
-    const authCard = document.getElementById('authCard');
-    const letterCard = document.getElementById('letterCard');
-    const typedText = document.getElementById('typedText');
+    // المان‌ها
+    const bodyEl = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    const iconMoon = document.getElementById('iconMoon');
+    const iconSun = document.getElementById('iconSun');
+    const showAllBtn = document.getElementById('showAllBtn');
+
+    const controlsEl = document.getElementById('controls');
+    const leadText = document.getElementById('leadText');
     const passwordInput = document.getElementById('passwordInput');
     const openBtn = document.getElementById('openBtn');
-    const showAllBtn = document.getElementById('showAllBtn');
-    const backBtn = document.getElementById('backBtn');
-
-    const loveAudio = document.getElementById('loveAudio');
+    const typedText = document.getElementById('typedText');
     const audioControls = document.getElementById('audioControls');
+    const loveAudio = document.getElementById('loveAudio');
     const playAudio = document.getElementById('playAudio');
     const pauseAudio = document.getElementById('pauseAudio');
     const restartAudio = document.getElementById('restartAudio');
+    const backBtn = document.getElementById('backBtn');
 
-    let typingInterval = null;
-
-    function typeMessage(text, prefix = '', speed = 40) {
-      clearInterval(typingInterval);
-      typedText.textContent = prefix;
-      let i = 0;
-      typingInterval = setInterval(() => {
-        typedText.textContent += text[i] || '';
-        i++;
-        if (i >= text.length) clearInterval(typingInterval);
-      }, speed);
+    // تنظیم تم پیش‌فرض: روشن
+    function setTheme(isDark){
+      if (isDark) {
+        bodyEl.classList.add('dark');
+        iconMoon.style.opacity = '0'; iconMoon.style.transform = 'scale(.8)';
+        iconSun.style.opacity = '1'; iconSun.style.transform = 'scale(1)';
+      } else {
+        bodyEl.classList.remove('dark');
+        iconMoon.style.opacity = '1'; iconMoon.style.transform = 'scale(1)';
+        iconSun.style.opacity = '0'; iconSun.style.transform = 'scale(.8)';
+      }
+      try{ sessionStorage.setItem('prefersDark', isDark ? '1' : '0'); }catch(e){}
     }
 
-    openBtn.addEventListener('click', () => {
-      const input = (passwordInput.value || '').trim();
-      // نمایش کارت نامه
-      authCard.classList.add('hidden');
-      letterCard.classList.remove('hidden');
-      audioControls.classList.add('hidden');
-      loveAudio.pause();
-      loveAudio.currentTime = 0;
-      typedText.textContent = '';
+    // بارگذاری ترجیح ذخیره‌شده (session)
+    try{
+      const pref = sessionStorage.getItem('prefersDark');
+      setTheme(pref === '1');
+    }catch(e){ setTheme(false); }
 
-      if (input === CORRECT_PASSWORD) {
-        // دکمه نمایش روی کارت نامه ظاهر می‌شود
-        showAllBtn.style.display = 'inline-block';
-        typedText.textContent = 'لطفاً صدای گوشیتو باز کن...\n\n';
-        setTimeout(() => {
-          audioControls.classList.remove('hidden');
-          // شروع تایپ؛ کاربر می‌تواند در هر لحظه با دکمه "نمایش" کل متن را یکجا ببیند
-          typeMessage(loveMessage, typedText.textContent);
-          loveAudio.play().catch(()=>{});
-        }, 700);
-      } else {
-        // اگر رمز غلط است، دکمه نمایش مخفی بماند
-        showAllBtn.style.display = 'none';
-        typedText.textContent = 'رمز رو اشتباه وارد کردی.';
-      }
+    themeToggle.addEventListener('click', () => {
+      const willDark = !bodyEl.classList.contains('dark');
+      setTheme(willDark);
+      themeToggle.animate([{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:140});
     });
 
-    // وقتی روی "نمایش" کلیک شد، هر افکت تایپ متوقف و متن کامل نمایش داده می‌شود
-    showAllBtn.addEventListener('click', () => {
+    // تایپ متن
+    let typingInterval = null;
+    function startTyping(prefix = '', speed = 36){
+      clearInterval(typingInterval);
+      typedText.classList.remove('full');
+      typedText.textContent = prefix;
+      let i = 0;
+      const txt = loveMessage;
+      typingInterval = setInterval(()=>{
+        if (i >= txt.length){ clearInterval(typingInterval); typedText.classList.add('full'); return; }
+        typedText.textContent += txt[i++];
+        if (i % 60 === 0) typedText.scrollTop = typedText.scrollHeight;
+      }, speed);
+    }
+    function showAllInstant(){
       clearInterval(typingInterval);
       typedText.textContent = loveMessage;
-      audioControls.classList.remove('hidden');
-      loveAudio.pause();
-      loveAudio.currentTime = 0;
-    });
+      typedText.classList.add('full');
+      typedText.scrollTop = 0;
+    }
 
-    backBtn.addEventListener('click', () => {
-      passwordInput.value = '';
-      typedText.textContent = '';
-      letterCard.classList.add('hidden');
-      authCard.classList.remove('hidden');
-      audioControls.classList.add('hidden');
-      loveAudio.pause();
-      loveAudio.currentTime = 0;
+    // وقتی رمز درست بود: فرم حذف شود و تنها عناصر لازم بمانند
+    function revealLetter(){
+      controlsEl.style.display = 'none';
+      leadText.style.display = 'none';
+      showAllBtn.style.display = 'inline-block';
+      audioControls.hidden = false;
+      typedText.textContent = 'لطفاً صدای گوشیتو باز کن...\n\n';
+      setTimeout(()=>{ startTyping(typedText.textContent, 36); loveAudio.play().catch(()=>{}); }, 300);
+    }
+
+    function resetToAuth(){
+      controlsEl.style.display = '';
+      leadText.style.display = '';
       showAllBtn.style.display = 'none';
+      audioControls.hidden = true;
+      typedText.textContent = '';
+      loveAudio.pause(); loveAudio.currentTime = 0;
       clearInterval(typingInterval);
+      passwordInput.value = '';
+      passwordInput.focus();
+    }
+
+    openBtn.addEventListener('click', ()=>{
+      const v = (passwordInput.value||'').trim();
+      if (v === CORRECT_PASSWORD) revealLetter();
+      else typedText.textContent = 'رمز رو اشتباه وارد کردی.';
     });
 
-    playAudio.addEventListener('click', () => loveAudio.play().catch(()=>{}));
-    pauseAudio.addEventListener('click', () => loveAudio.pause());
-    restartAudio.addEventListener('click', () => { loveAudio.currentTime = 0; loveAudio.play().catch(()=>{}); });
+    showAllBtn.addEventListener('click', ()=>{
+      showAllInstant();
+      loveAudio.pause(); loveAudio.currentTime = 0;
+    });
+
+    playAudio && playAudio.addEventListener('click', ()=> loveAudio.play().catch(()=>{}));
+    pauseAudio && pauseAudio.addEventListener('click', ()=> loveAudio.pause());
+    restartAudio && restartAudio.addEventListener('click', ()=> { loveAudio.currentTime = 0; loveAudio.play().catch(()=>{}); });
+
+    backBtn.addEventListener('click', resetToAuth);
+    passwordInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') openBtn.click(); });
+    window.addEventListener('load', ()=> passwordInput.focus());
   </script>
 </body>
 </html>
