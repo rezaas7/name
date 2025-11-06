@@ -63,7 +63,6 @@
       will-change:transform;
       overflow:hidden;
     }
-    /* شناور آهسته برای جلوه */
     .card:hover{transform:translateY(-6px) scale(1.01)}
     .card::before{
       content:"";position:absolute;inset:0;background:linear-gradient(120deg, rgba(255,255,255,0.02), transparent 30%);pointer-events:none;
@@ -74,10 +73,8 @@
     h1{font-size:1.05rem;margin:0}
     p.lead{margin:0;color:var(--muted);font-size:.95rem;transition:color .25s}
 
-    /* هدر اکشن‌ها */
     .header-actions{display:flex;align-items:center;gap:10px}
 
-    /* دکمهٔ تم روی بلوک */
     .theme-toggle{
       display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;
       padding:.45rem;border-radius:10px;cursor:pointer;color:var(--text);
@@ -89,14 +86,12 @@
     .theme-toggle:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,0.06)}
     .theme-toggle svg{width:22px;height:22px;display:block;transition:transform .28s cubic-bezier(.2,.9,.2,1),opacity .2s;fill:currentColor}
 
-    /* دکمه نمایش کامل */
     #showAllBtn{
       padding:.45rem .75rem;border-radius:10px;font-weight:700;background:var(--accent-grad);border:0;color:#051223;cursor:pointer;
       transition:filter .18s ease, transform .12s;
     }
     #showAllBtn:hover{filter:brightness(.98);transform:translateY(-2px)}
 
-    /* فرم و کنترل‌ها */
     .controls{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}
     input[type="password"]{
       background:transparent;border:1px solid rgba(0,0,0,0.06);padding:.7rem .9rem;border-radius:10px;color:var(--text);
@@ -107,23 +102,19 @@
     }
     body.dark input[type="password"]{border-color:rgba(255,255,255,0.06)}
 
-    /* پیام */
     .message{
       margin-top:8px;padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
       color:var(--text);line-height:1.85;white-space:pre-wrap;max-height:58vh;overflow:auto;border:1px solid rgba(0,0,0,0.03);
       transition:background .35s,color .25s;
     }
-    /* وقتی متن کامل نمایش داده شد، اندکی glow */
     .message.full{box-shadow:0 10px 30px rgba(0,0,0,0.06);border-color:rgba(255,255,255,0.02)}
 
-    /* کنترل صوت و بازگشت */
     .audio-controls{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
     .audio-controls button, .back{
       padding:.45rem .6rem;border-radius:8px;border:0;background:transparent;color:var(--text);cursor:pointer;transition:color .18s;
     }
     .back{margin-left:auto;margin-top:12px;padding:.55rem .8rem;border-radius:8px;border:1px solid rgba(0,0,0,0.04);background:transparent;color:var(--muted);cursor:pointer}
 
-    /* هاور کوچک روی لینک/دکمه‌های غیر اصلی */
     .audio-controls button:hover, .back:hover{color:var(--muted);transform:translateY(-2px)}
 
     @media (max-width:520px){
@@ -264,7 +255,6 @@
       try{ sessionStorage.setItem('prefersDark', isDark ? '1' : '0'); }catch(e){}
     }
 
-    // بارگذاری ترجیح ذخیره‌شده (session)
     try{
       const pref = sessionStorage.getItem('prefersDark');
       setTheme(pref === '1');
@@ -276,7 +266,7 @@
       themeToggle.animate([{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:140});
     });
 
-    // تایپ متن
+    // تایپ متن (بدون اسکرول خودکار)
     let typingInterval = null;
     function startTyping(prefix = '', speed = 36){
       clearInterval(typingInterval);
@@ -285,19 +275,24 @@
       let i = 0;
       const txt = loveMessage;
       typingInterval = setInterval(()=>{
-        if (i >= txt.length){ clearInterval(typingInterval); typedText.classList.add('full'); return; }
+        if (i >= txt.length){
+          clearInterval(typingInterval);
+          typedText.classList.add('full');
+          return;
+        }
         typedText.textContent += txt[i++];
-        if (i % 60 === 0) typedText.scrollTop = typedText.scrollHeight;
+        // مهم: هیچ دستوری برای تغییر typedText.scrollTop وجود ندارد
       }, speed);
     }
+
     function showAllInstant(){
       clearInterval(typingInterval);
       typedText.textContent = loveMessage;
       typedText.classList.add('full');
-      typedText.scrollTop = 0;
+      // مهم: باز هم هیچ عمل اسکرول خودکاری انجام نمی‌شود
     }
 
-    // وقتی رمز درست بود: فرم حذف شود و تنها عناصر لازم بمانند
+    // reveal/reset
     function revealLetter(){
       controlsEl.style.display = 'none';
       leadText.style.display = 'none';
@@ -319,13 +314,13 @@
       passwordInput.focus();
     }
 
-    openBtn.addEventListener('click', ()=>{
+    openBtn.addEventListener('click', ()=> {
       const v = (passwordInput.value||'').trim();
       if (v === CORRECT_PASSWORD) revealLetter();
       else typedText.textContent = 'رمز رو اشتباه وارد کردی.';
     });
 
-    showAllBtn.addEventListener('click', ()=>{
+    showAllBtn.addEventListener('click', ()=> {
       showAllInstant();
       loveAudio.pause(); loveAudio.currentTime = 0;
     });
