@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>نامه‌ای برای تو</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Vazirmatn',sans-serif;background:linear-gradient(135deg,#fce3ec,#ffe8d6);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .card{background:#fff;border-radius:16px;box-shadow:0 8px 20px rgba(0,0,0,.18);width:90%;max-width:640px;padding:28px;text-align:center;position:relative}
+    .show-btn{position:absolute;left:16px;top:12px;padding:.45rem .7rem;border-radius:8px;background:#444;color:#fff;border:none;cursor:pointer;font-size:.85rem;display:none}
+    h2{margin-bottom:.4rem}
+    p{color:#333;margin-bottom:1rem}
+    input[type="password"]{width:80%;max-width:420px;padding:.75rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;margin-bottom:1rem}
+    .actions{margin-top:.6rem}
+    button{padding:.7rem 1.2rem;border-radius:8px;border:none;background:#d6336c;color:#fff;cursor:pointer;margin:.2rem;transition:transform .18s}
+    button:hover{transform:scale(1.04)}
+    .back-btn{background:#555;margin-top:1rem}
+    .hidden{display:none}
+    .message{text-align:right;font-size:1.05rem;line-height:1.9;white-space:pre-wrap;margin-top:1rem;max-height:60vh;overflow:auto;padding:14px;background:#fdfcf9;border-radius:12px;box-shadow:inset 0 0 10px rgba(0,0,0,.04)}
+    .audio-controls{margin-top:10px}
+    .audio-controls button{background:#0a84ff}
+    @media (max-width:600px){input[type="password"]{width:100%}.show-btn{left:12px;top:10px;padding:.35rem .5rem}}
+  </style>
+</head>
+<body>
+  <div class="card" id="authCard">
+    <h2>نامه‌ای برای تو</h2>
+    <p>برای دیدن نامه، رمز را وارد کن:</p>
+    <input type="password" id="passwordInput" placeholder="رمز را وارد کنید..." />
+    <div class="actions">
+      <button id="openBtn">باز کردن نامه</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="letterCard">
+    <button class="show-btn" id="showAllBtn" title="نمایش کامل متن">نمایش</button>
+    <div class="message" id="typedText"></div>
+
+    <div class="audio-controls hidden" id="audioControls">
+      <audio id="loveAudio" src="rafti.mp3"></audio>
+      <button id="playAudio">پخش آهنگ</button>
+      <button id="pauseAudio">توقف آهنگ</button>
+      <button id="restartAudio">پخش مجدد</button>
+    </div>
+
+    <button class="back-btn" id="backBtn">بازگشت</button>
+  </div>
+
+  <script>
+    const CORRECT_PASSWORD = "sara";
+    const loveMessage = `سارای عزیزم،
+
+سلام…
+امیدوارم حالت خوب باشه، نه فقط امروز، بلکه همیشه.
+امیدوارم هر جا که هستی، موفقیت همراهت باشه و آرامش توی دلت جریان داشته باشه.
+
+امروز که دارم این نامه رو برات می‌نویسم، دومین سالگرد با هم بودنمونه.
+دو سالی که پر از خاطره بود… پر از لحظه‌هایی که گاهی شیرین بودن، گاهی تلخ، گاهی پر از خنده، گاهی پر از اشک.
+روزهایی که با هم گذروندیم، از استرس و اضطراب گرفته تا شادی و آرامش، از ناامیدی تا امید دوباره.
+اما همیشه، حتی توی سخت‌ترین لحظه‌ها، سعی کردیم کنار هم بخندیم… نه به هم، بلکه با هم.
+
+یادته اون روزایی که صبح تا عصر کنار هم بودیم؟
+با هم می‌رفتیم دانشگاه، توی جال عمران چای می‌خوردیم،
+سوار مترو می‌شدیم، توی پارک قدم می‌زدیم و درباره‌ی آینده حرف می‌زدیم…
+رویا می‌ساختیم، نقشه می‌کشیدیم، و با چشم‌هامون آینده رو تصور می‌کردیم.
+
+لحظه‌هایی بودن که شاید هیچ‌وقت فراموش نکنیم.
+لحظه‌هایی که توی خاطراتمون ثبت شدن، مثل عکس‌هایی که هیچ‌وقت رنگ نمی‌بازن.
+
+اما امسال، بر خلاف سال قبل، شاید هردومون اون‌قدر خوشحال نیستیم.
+رابطه‌مون به مرحله‌ای رسیده که نه تو خواستش بودی، نه من.
+پذیرفتنش سخته… خیلی سخت.
+هیچ‌وقت نمی‌خواستیم به این نقطه برسیم، اما رسیدیم.
+
+تو مسیرت رو انتخاب کردی… مهاجرت.
+و من موندم با خاطره‌ها، با لحظه‌هایی که هنوز توی ذهنم زنده‌ان.
+با صدای خنده‌هات، با نگاهت، با حرف‌هایی که نصفه موندن.
+
+نمی‌خوام این نامه فقط درباره‌ی رفتنت باشه.
+می‌خوام بدونی که هنوز، با تمام وجود، دوستت دارم.
+نه به خاطر خاطره‌ها، بلکه به خاطر خودت…
+به خاطر اون دختری که توی شلوغی‌های مترو دستم رو محکم گرفت،
+به خاطر اون لحظه‌ای که توی پارک گفتی: «کنار تو، همه‌چی آرومه.»
+
+سارا جان،
+اگه یه روزی این نامه رو دوباره بخونی،
+بدون که یه نفر، یه جایی، هنوز با عشق بهت فکر می‌کنه.
+نه با حسرت، بلکه با لبخند.
+با آرزوی بهترین‌ها… برای تو، برای آینده‌ات، برای قلبت.
+
+با عشق،
+رضا`;
+
+    const authCard = document.getElementById('authCard');
+    const letterCard = document.getElementById('letterCard');
+    const typedText = document.getElementById('typedText');
+    const passwordInput = document.getElementById('passwordInput');
+    const openBtn = document.getElementById('openBtn');
+    const showAllBtn = document.getElementById('showAllBtn');
+    const backBtn = document.getElementById('backBtn');
+
+    const loveAudio = document.getElementById('loveAudio');
+    const audioControls = document.getElementById('audioControls');
+    const playAudio = document.getElementById('playAudio');
+    const pauseAudio = document.getElementById('pauseAudio');
+    const restartAudio = document.getElementById('restartAudio');
+
+    let typingInterval = null;
+
+    function typeMessage(text, prefix = '', speed = 40) {
+      clearInterval(typingInterval);
+      typedText.textContent = prefix;
+      let i = 0;
+      typingInterval = setInterval(() => {
+        typedText.textContent += text[i] || '';
+        i++;
+        if (i >= text.length) clearInterval(typingInterval);
+      }, speed);
+    }
+
+    openBtn.addEventListener('click', () => {
+      const input = (passwordInput.value || '').trim();
+      // نمایش کارت نامه
+      authCard.classList.add('hidden');
+      letterCard.classList.remove('hidden');
+      audioControls.classList.add('hidden');
+      loveAudio.pause();
+      loveAudio.currentTime = 0;
+      typedText.textContent = '';
+
+      if (input === CORRECT_PASSWORD) {
+        // دکمه نمایش روی کارت نامه ظاهر می‌شود
+        showAllBtn.style.display = 'inline-block';
+        typedText.textContent = 'لطفاً صدای گوشیتو باز کن...\n\n';
+        setTimeout(() => {
+          audioControls.classList.remove('hidden');
+          // شروع تایپ؛ کاربر می‌تواند در هر لحظه با دکمه "نمایش" کل متن را یکجا ببیند
+          typeMessage(loveMessage, typedText.textContent);
+          loveAudio.play().catch(()=>{});
+        }, 700);
+      } else {
+        // اگر رمز غلط است، دکمه نمایش مخفی بماند
+        showAllBtn.style.display = 'none';
+        typedText.textContent = 'رمز رو اشتباه وارد کردی.';
+      }
+    });
+
+    // وقتی روی "نمایش" کلیک شد، هر افکت تایپ متوقف و متن کامل نمایش داده می‌شود
+    showAllBtn.addEventListener('click', () => {
+      clearInterval(typingInterval);
+      typedText.textContent = loveMessage;
+      audioControls.classList.remove('hidden');
+      loveAudio.pause();
+      loveAudio.currentTime = 0;
+    });
+
+    backBtn.addEventListener('click', () => {
+      passwordInput.value = '';
+      typedText.textContent = '';
+      letterCard.classList.add('hidden');
+      authCard.classList.remove('hidden');
+      audioControls.classList.add('hidden');
+      loveAudio.pause();
+      loveAudio.currentTime = 0;
+      showAllBtn.style.display = 'none';
+      clearInterval(typingInterval);
+    });
+
+    playAudio.addEventListener('click', () => loveAudio.play().catch(()=>{}));
+    pauseAudio.addEventListener('click', () => loveAudio.pause());
+    restartAudio.addEventListener('click', () => { loveAudio.currentTime = 0; loveAudio.play().catch(()=>{}); });
+  </script>
+</body>
+</html>
